@@ -1,0 +1,9 @@
+Postgres:
+    user: "postgres"
+    password: "postgres"
+    host: "localhost"
+    port: "5432"
+    name: "postgres"
+
+DB_Type:
+    DB: "postgres"

@@ -1,0 +1,8 @@
+FROM golang:alpine
+
+RUN apk add --no-cache git
+RUN go install github.com/pressly/goose/v3/cmd/goose@latest
+ENV PATH=$PATH:/go/bin
+COPY ./deployments/migrations /migrations
+WORKDIR /migrations
+CMD ["goose", "-dir", ".", "postgres", "postgres://postgres:postgres@postgres:5432/postgres?sslmode=disable", "up"]
