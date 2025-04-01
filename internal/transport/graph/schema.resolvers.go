@@ -13,32 +13,8 @@ import (
 	"go.uber.org/zap"
 )
 
-const (
-	maxPostLen    = 10000
-	maxCommentLen = 2000
-)
-
 // CreatePost is the resolver for the createPost field.
 func (r *mutationResolver) CreatePost(ctx context.Context, input model.CreatePostInput) (*model.Post, error) {
-	if input.Content == "" {
-		r.logs.Debug("invalid input arguments")
-		return nil, &gqlerror.Error{
-			Message: "invalid argument",
-			Extensions: map[string]interface{}{
-				"code": http.StatusBadRequest,
-			},
-		}
-	}
-
-	if len(input.Content) > maxPostLen {
-		r.logs.Debug("input content is too long")
-		return nil, &gqlerror.Error{
-			Message: "content is too long",
-			Extensions: map[string]interface{}{
-				"code": http.StatusBadRequest,
-			},
-		}
-	}
 
 	r.logs.Debug("Creating post", zap.Any("input", input))
 
@@ -52,7 +28,7 @@ func (r *mutationResolver) CreatePost(ctx context.Context, input model.CreatePos
 		return nil, &gqlerror.Error{
 			Message: "failed to create post",
 			Extensions: map[string]interface{}{
-				"code": http.StatusInternalServerError,
+				"code": http.StatusBadRequest,
 			},
 		}
 	}
@@ -62,25 +38,6 @@ func (r *mutationResolver) CreatePost(ctx context.Context, input model.CreatePos
 
 // PostComment is the resolver for the postComment field.
 func (r *mutationResolver) PostComment(ctx context.Context, input model.PostCommentInput) (*model.Comment, error) {
-	if len(input.Content) > maxCommentLen {
-		r.logs.Info("comment is too long")
-		return nil, &gqlerror.Error{
-			Message: "comment is too long",
-			Extensions: map[string]interface{}{
-				"code": http.StatusBadRequest,
-			},
-		}
-	}
-
-	if input.Content == "" {
-		r.logs.Info("invalid input arguments")
-		return nil, &gqlerror.Error{
-			Message: "invalid argument",
-			Extensions: map[string]interface{}{
-				"code": http.StatusBadRequest,
-			},
-		}
-	}
 
 	r.logs.Debug("Creating comment", zap.Any("input", input))
 

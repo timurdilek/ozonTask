@@ -18,6 +18,12 @@ type InMemoryRepo struct {
 	logger *zap.Logger
 }
 
+func NewInMemoryRepo() *InMemoryRepo {
+	log := logger.GetLogger()
+	var inMemoryStorage = make(map[string]model.Post)
+	return &InMemoryRepo{memory: inMemoryStorage, mu: &sync.Mutex{}, logger: log}
+}
+
 func (i InMemoryRepo) CreatePost(ctx context.Context, input model.CreatePostInput) (*model.Post, error) {
 	i.mu.Lock()
 	defer i.mu.Unlock()
@@ -251,10 +257,4 @@ func findCommentsByParentID(comments []*model.Comment, parentCommentID string) [
 	}
 
 	return result
-}
-
-func NewInMemoryRepo() *InMemoryRepo {
-	log := logger.GetLogger()
-	var inMemoryStorage = make(map[string]model.Post)
-	return &InMemoryRepo{memory: inMemoryStorage, mu: &sync.Mutex{}, logger: log}
 }

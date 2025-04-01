@@ -6,6 +6,11 @@ import (
 	"ozon/internal/transport/graph/model"
 )
 
+const (
+	maxPostLen    = 10000
+	maxCommentLen = 2000
+)
+
 type Repository interface {
 	CreatePost(ctx context.Context, input model.CreatePostInput) (*model.Post, error)
 	PostComment(ctx context.Context, input model.PostCommentInput) (*model.Comment, error)
@@ -28,7 +33,17 @@ func New(repository Repository) *Service {
 }
 
 func (s Service) CreatePost(ctx context.Context, input model.CreatePostInput) (*model.Post, error) {
+
+	if input.Content == "" {
+		return nil, ErrIncorrectContentLen
+	}
+
+	if len(input.Content) > maxPostLen {
+		return nil, ErrIncorrectPostLen
+	}
+
 	post, err := s.repo.CreatePost(ctx, input)
+
 	if err != nil {
 		return nil, err
 	}
@@ -37,6 +52,14 @@ func (s Service) CreatePost(ctx context.Context, input model.CreatePostInput) (*
 }
 
 func (s Service) PostComment(ctx context.Context, input model.PostCommentInput) (*model.Comment, error) {
+
+	if input.Content == "" {
+		return nil, ErrIncorrectContentLen
+	}
+
+	if len(input.Content) > maxCommentLen {
+		return nil, ErrIncorrectCommentLen
+	}
 
 	post, err := s.repo.GetPostByID(ctx, input.PostID)
 
