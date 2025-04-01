@@ -36,15 +36,5 @@ in-memory-docker:
 
 postgres-docker:
 	sed -i 's/DB: ".*"/DB: "postgres"/' $(CONFIG_FILE)
-	sed -i 's/host:.* ".*"/host: "postgres"/' $(CONFIG_FILE)
 	docker compose -f docker-compose.yml --profile postgres up
 
-in-memory-local:
-	sed -i 's/DB: ".*"/DB: "in_memory"/' $(CONFIG_FILE)
-	go run ./cmd/app/main.go
-
-
-postgres-local:
-	sed -i 's/DB: ".*"/DB: "postgres"/' $(CONFIG_FILE)
-	sed -i 's/host:.* ".*"/host: "localhost"/' $(CONFIG_FILE)
-	go run ./cmd/app/main.go
