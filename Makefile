@@ -30,11 +30,11 @@ new-migration:
 
 CONFIG_FILE=./config/config.yaml
 
-in-memory-docker:
+in-memory:
 	sed -i 's/DB: ".*"/DB: "in_memory"/' $(CONFIG_FILE)
 	docker compose -f docker-compose.yml --profile in-memory up
 
-postgres-docker:
+postgres:
 	sed -i 's/DB: ".*"/DB: "postgres"/' $(CONFIG_FILE)
 	docker compose -f docker-compose.yml --profile postgres up
 
