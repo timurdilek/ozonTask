@@ -13,6 +13,11 @@ import (
 	"go.uber.org/zap"
 )
 
+const (
+	maxPostLen    = 10000
+	maxCommentLen = 2000
+)
+
 // CreatePost is the resolver for the createPost field.
 func (r *mutationResolver) CreatePost(ctx context.Context, input model.CreatePostInput) (*model.Post, error) {
 	if input.Content == "" {
@@ -25,7 +30,7 @@ func (r *mutationResolver) CreatePost(ctx context.Context, input model.CreatePos
 		}
 	}
 
-	if len(input.Content) > 10000 {
+	if len(input.Content) > maxPostLen {
 		r.logs.Debug("input content is too long")
 		return nil, &gqlerror.Error{
 			Message: "content is too long",
@@ -57,7 +62,7 @@ func (r *mutationResolver) CreatePost(ctx context.Context, input model.CreatePos
 
 // PostComment is the resolver for the postComment field.
 func (r *mutationResolver) PostComment(ctx context.Context, input model.PostCommentInput) (*model.Comment, error) {
-	if len(input.Content) > 2000 {
+	if len(input.Content) > maxCommentLen {
 		r.logs.Info("comment is too long")
 		return nil, &gqlerror.Error{
 			Message: "comment is too long",
